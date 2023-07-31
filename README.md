@@ -1,11 +1,13 @@
 # AnimatedSlideView for SwiftUI
 
 <p>
-  <img src="https://img.shields.io/badge/iOS-16.0+-blue"/>
+  <img src="https://img.shields.io/badge/iOS-13.0+-blue"/>
   <img src="https://img.shields.io/badge/SwiftUI-blue"/>
 </p>
+<p align="leading">
+  <img width="25%" src="https://github.com/cyeond/AnimatedSlideView/assets/139483587/039f809d-37dd-4dfb-8260-fb9eb284a84c">
+</p>
 
-<br>
 <br>
 
 ## Client Usage
@@ -50,3 +52,6 @@ struct ContentView: View {
     }
 }
 ```
+
+<br>
+<br>

@@ -14,7 +14,7 @@
 
 1. Add package with URL https://github.com/cyeond/AnimatedSlideView
 2. import AnimatedSlideView
-3. Set three custom views in AnimatedSlideView(first: , second: , third: )
+3. Set your custom views in AnimatedSlideView(views: [])
 ### Example
 ```swift
 import SwiftUI
@@ -22,23 +22,21 @@ import AnimatedSlideView
 
 struct ContentView: View {
     var body: some View {
-        AnimatedSlideView {
+        AnimatedSlideView(views: [
             ZStack {
                 Color.red
                 Text("First View")
                     .foregroundColor(.white)
                     .font(.system(size: 30.0))
                     .fontWeight(.bold)
-            }
-        } second: {
+            },
             ZStack {
                 Color.yellow
                 Text("Second View")
                     .foregroundColor(.white)
                     .font(.system(size: 30.0))
                     .fontWeight(.bold)
-            }
-        } third: {
+            },
             ZStack {
                 Color.blue
                 Text("Third View")
@@ -46,7 +44,7 @@ struct ContentView: View {
                     .font(.system(size: 30.0))
                     .fontWeight(.bold)
             }
-        }
+        ])
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

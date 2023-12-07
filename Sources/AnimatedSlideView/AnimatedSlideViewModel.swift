@@ -5,7 +5,13 @@ class AnimatedSlideViewModel: ObservableObject {
     @Published var offsetRatio: CGFloat = 0
     @Published var currentPage: Int = 0
     @Published var dragStarted: Bool = false
+    
+    private let totalPageCount: Int
     private var firstOffset: CGFloat = 0
+    
+    init(totalPageCount: Int) {
+        self.totalPageCount = totalPageCount
+    }
     
     func setOffset(_ offset: CGFloat) {
         if dragStarted == false {
@@ -29,7 +35,7 @@ class AnimatedSlideViewModel: ObservableObject {
         guard offsetRatio.magnitude > 0.2  else { return }
         if offsetRatio < 0 {
             switch currentPage {
-            case 2:
+            case totalPageCount - 1:
                 currentPage = 0
             default:
                 currentPage += 1
@@ -37,7 +43,7 @@ class AnimatedSlideViewModel: ObservableObject {
         } else {
             switch currentPage {
             case 0:
-                currentPage = 2
+                currentPage = totalPageCount - 1
             default:
                 currentPage -= 1
             }

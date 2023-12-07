@@ -1,72 +1,76 @@
 import SwiftUI
 
-public struct AnimatedSlideView<Content1: View, Content2: View, Content3: View>: View {
+public struct AnimatedSlideView: View {
     @ObservedObject var viewModel: AnimatedSlideViewModel
-    var view1: Content1
-    var view2: Content2
-    var view3: Content3
+    typealias SlidableContent = ZStack<TupleView<(Color, AnyView)>>
+    var views: [SlidableContent]
     
-    
-    public init(@ViewBuilder first: () -> Content1, @ViewBuilder second: () -> Content2, @ViewBuilder third: () -> Content3) {
-        self.viewModel = AnimatedSlideViewModel()
-        self.view1 = first()
-        self.view2 = second()
-        self.view3 = third()
+    public init(views: [any View]) {
+        self.viewModel = AnimatedSlideViewModel(totalPageCount: views.count)
+        
+        self.views = views.map { view in ZStack {
+            Color.white.opacity(0.000001)
+            AnyView(view)
+        }}
     }
     
     public var body: some View {
-        switch viewModel.currentPage {
-        case 1:
-            ZStack {
-                view2
-                    .opacity(1-viewModel.offsetRatio.magnitude)
-                view3
-                    .opacity(viewModel.offsetRatio < 0 ? viewModel.offsetRatio.magnitude : 0)
-                view1
-                    .opacity(viewModel.offsetRatio > 0 ? viewModel.offsetRatio.magnitude : 0)
-            }
-            .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .global)
-                .onChanged { value in
-                    viewModel.setOffset(value.translation.width)
+        if views.count == 1 {
+            views[0]
+        } else {
+            switch viewModel.currentPage {
+            case 0:
+                ZStack {
+                    views[viewModel.currentPage]
+                        .opacity(1-viewModel.offsetRatio.magnitude)
+                    views[viewModel.currentPage+1]
+                        .opacity(viewModel.offsetRatio < 0 ? viewModel.offsetRatio.magnitude : 0)
+                    views[views.count-1]
+                        .opacity(viewModel.offsetRatio > 0 ? viewModel.offsetRatio.magnitude : 0)
                 }
-                .onEnded({ value in
-                    viewModel.resetOffset()
-                })
-            )
-        case 2:
-            ZStack {
-                view3
-                    .opacity(1-viewModel.offsetRatio.magnitude)
-                view1
-                    .opacity(viewModel.offsetRatio < 0 ? viewModel.offsetRatio.magnitude : 0)
-                view2
-                    .opacity(viewModel.offsetRatio > 0 ? viewModel.offsetRatio.magnitude : 0)
-            }
-            .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .global)
-                .onChanged { value in
-                    viewModel.setOffset(value.translation.width)
+                .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .global)
+                    .onChanged { value in
+                        viewModel.setOffset(value.translation.width)
+                    }
+                    .onEnded({ value in
+                        viewModel.resetOffset()
+                    })
+                )
+            case views.count-1:
+                ZStack {
+                    views[views.count-1]
+                        .opacity(1-viewModel.offsetRatio.magnitude)
+                    views[0]
+                        .opacity(viewModel.offsetRatio < 0 ? viewModel.offsetRatio.magnitude : 0)
+                    views[views.count-2]
+                        .opacity(viewModel.offsetRatio > 0 ? viewModel.offsetRatio.magnitude : 0)
                 }
-                .onEnded({ value in
-                    viewModel.resetOffset()
-                })
-            )
-        default:
-            ZStack {
-                view1
-                    .opacity(1-viewModel.offsetRatio.magnitude)
-                view2
-                    .opacity(viewModel.offsetRatio < 0 ? viewModel.offsetRatio.magnitude : 0)
-                view3
-                    .opacity(viewModel.offsetRatio > 0 ? viewModel.offsetRatio.magnitude : 0)
-            }
-            .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .global)
-                .onChanged { value in
-                    viewModel.setOffset(value.translation.width)
+                .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .global)
+                    .onChanged { value in
+                        viewModel.setOffset(value.translation.width)
+                    }
+                    .onEnded({ value in
+                        viewModel.resetOffset()
+                    })
+                )
+            default:
+                ZStack {
+                    views[viewModel.currentPage]
+                        .opacity(1-viewModel.offsetRatio.magnitude)
+                    views[viewModel.currentPage+1]
+                        .opacity(viewModel.offsetRatio < 0 ? viewModel.offsetRatio.magnitude : 0)
+                    views[viewModel.currentPage-1]
+                        .opacity(viewModel.offsetRatio > 0 ? viewModel.offsetRatio.magnitude : 0)
                 }
-                .onEnded({ value in
-                    viewModel.resetOffset()
-                })
-            )
+                .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .global)
+                    .onChanged { value in
+                        viewModel.setOffset(value.translation.width)
+                    }
+                    .onEnded({ value in
+                        viewModel.resetOffset()
+                    })
+                )
+            }
         }
     }
 }
